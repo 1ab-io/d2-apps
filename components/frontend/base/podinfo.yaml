@@ -37,8 +37,18 @@ spec:
     ingress:
       enabled: true
       className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: selfsigned-issuer
       hosts:
-        - host: podinfo.${CLUSTER_DOMAIN}
+        # - host: podinfo.${CLUSTER_DOMAIN}
+        #   paths:
+        #     - path: /
+        #       pathType: ImplementationSpecific
+        - host: &host podinfo.${CLUSTER_NAME}.${BASE_DOMAIN}
           paths:
             - path: /
-              pathType: ImplementationSpecific
+              pathType: Prefix
+      tls:
+        - secretName: podinfo-tls
+          hosts:
+            - *host
